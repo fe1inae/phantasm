@@ -5,6 +5,8 @@ a font for myself 🐈
 
 generated using pure posix utils
 
+![ascii characters](img/ascii.png)
+
 features
 ========
 
@@ -18,6 +20,11 @@ todo
 - rewrite the slow scripts (hex2bdf.awk)
 - more stylistic changes
 - icons in private use area
+
+note
+====
+
+to generate/update the previews, imagemagick convert is required
 
 license
 =======
