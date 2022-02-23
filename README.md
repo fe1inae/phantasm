@@ -5,7 +5,7 @@ a font for myself 🐈
 
 generated using pure posix utils
 
-![ascii characters](img/ascii.png)
+![ascii characters](./img/ascii.png)
 
 features
 ========
