@@ -15,7 +15,7 @@ FONTDIR = /share/fonts/misc
 # TOOLS
 # =====
 
-AWK     = gawk -P -Wposix # gawk is faster
+AWK     = gawk -P -Wposix
 GUNZIP  = unpigz
 FFORGE  = fontforge
 
@@ -26,18 +26,21 @@ SRC = src/braille src/alphabet
 
 FILES = out/$(NAME).bdf out/$(NAME).pcf out/$(NAME).otb out/$(NAME).ttf
 
+PREVIEW = img/ascii.png img/block.png img/box.png img/braille.png
+
+
 # RULES
 # =====
 
 HEX = $(SRC:=.hex) dep/unifont.hex
 
-all: $(FILES)
+all: $(FILES) $(PREVIEW)
 
 # amalgamate hex files
 out/$(NAME).hex: $(HEX)
 	@mkdir -p out -p out
-	@# -s isnt posix, but it greatly simplifies things and is pretty common,
-	@# busybox, coreutils, and openbsd support it at least.
+	@# sort -s isnt posix, but it greatly simplifies things and is pretty 
+	@# common, busybox, coreutils, and openbsd support it at least.5
 	@# ill write some alternative for this whole block soon™ tbh
 	sed 's/\(.*\):\(.*\)/\2\t\1/' $(HEX) \
 	| sort -s -k 2 \
@@ -49,16 +52,19 @@ dep/unifont.hex:
 	@mkdir -p dep
 	curl -s "http://unifoundry.com/pub/unifont/unifont-$(UNIFONT)/font-builds/unifont_sample-$(UNIFONT).hex.gz" -o - | unpigz - > $(@)
 
+# image preview
+img/ascii.png: out/phantasm.bdf
+
 # un/install font files
 install: all
 	@mkdir -p "$(PREFIX)$(FONTDIR)"
 	for f in $(FILES); do install -Dm644 "$$f" "$(PREFIX)$(FONTDIR)"; done
 uninstall:; for f in $(FILES); do rm -f "$(PREFIX)$(FONTDIR)/$${f#out/}"; done
-	
+
 # SUFFIXES
 # ========
 
-.SUFFIXES: .awk .txt .hex .pcf .ttf .otb .bdf .hex
+.SUFFIXES: .awk .txt .hex .pcf .ttf .otb .bdf .hex .png
 
 .awk.hex:; $(AWK) -f $(<) > $(@)
 .txt.hex:; $(AWK) -f bin/checktxt $(<) && $(AWK) -f bin/txt2hex.awk $(<) > $(@)
@@ -66,6 +72,7 @@ uninstall:; for f in $(FILES); do rm -f "$(PREFIX)$(FONTDIR)/$${f#out/}"; done
 .bdf.pcf:; bdftopcf $(<) > $(@)
 .pcf.otb:; $(FFORGE) -lang ff -c 'Open("$(<)"); Generate("$(*).", "otb")'
 .pcf.ttf:; $(FFORGE) -lang ff -c 'Open("$(<)"); Generate("$(*).", "ttf")'
+.txt.png:; sh bin/preview.sh ${<} ${@}
 
 # MISC
 # ====
