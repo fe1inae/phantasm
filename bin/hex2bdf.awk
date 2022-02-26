@@ -83,7 +83,7 @@ END {
 			
 		printf("STARTCHAR U+%s\n", codepoint)
 		printf("ENCODING %d\n", hex2dec(codepoint))
-		printf("SWIDTH %d 0\n", (1000*width)/16)
+		printf("SWIDTH %d 0\n", (1000*width)/8)
 		printf("DWIDTH %d 0\n", width*2)
 		printf("BBX %d 16 0 0\n", width*2)
 		printf("BITMAP %s\n", glyph)
