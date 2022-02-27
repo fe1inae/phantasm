@@ -5,17 +5,18 @@
 # =========
 
 NAME    = phantasm
-VERSION = 0.0.1
+VERSION = 0.0.3
 
 UNIFONT = 14.0.01
 
+DESTDIR = /
 PREFIX  = /usr
 FONTDIR = /share/fonts/misc
 
 # TOOLS
 # =====
 
-AWK     = gawk -P -Wposix
+AWK     = awk
 GUNZIP  = unpigz
 FFORGE  = fontforge
 
@@ -28,13 +29,13 @@ FILES = out/$(NAME).bdf out/$(NAME).pcf out/$(NAME).otb out/$(NAME).ttf
 
 PREVIEW = img/ascii.png img/block.png img/box.png img/braille.png
 
-
 # RULES
 # =====
 
 HEX = $(SRC:=.hex) dep/unifont.hex
 
-all: $(FILES) $(PREVIEW)
+all: $(FILES)
+img: all $(PREVIEW)
 
 # amalgamate hex files
 out/$(NAME).hex: $(HEX)
@@ -56,10 +57,11 @@ dep/unifont.hex:
 img/ascii.png: out/phantasm.bdf
 
 # un/install font files
+_FONTDIR=$(DESTDIR)$(PREFIX)$(FONTDIR)
 install: all
-	@mkdir -p "$(PREFIX)$(FONTDIR)"
-	for f in $(FILES); do install -Dm644 "$$f" "$(PREFIX)$(FONTDIR)"; done
-uninstall:; for f in $(FILES); do rm -f "$(PREFIX)$(FONTDIR)/$${f#out/}"; done
+	@mkdir -p "$(_FONTDIR)"
+	for f in $(FILES); do install -Dm644 "$$f" "$(_FONTDIR)"; done
+uninstall:; for f in $(FILES); do rm -f "$(_FONTDIR)/$${f#out/}"; done
 
 # SUFFIXES
 # ========
@@ -67,7 +69,7 @@ uninstall:; for f in $(FILES); do rm -f "$(PREFIX)$(FONTDIR)/$${f#out/}"; done
 .SUFFIXES: .awk .txt .hex .pcf .ttf .otb .bdf .hex .png
 
 .awk.hex:; $(AWK) -f $(<) > $(@)
-.txt.hex:; $(AWK) -f bin/checktxt $(<) && $(AWK) -f bin/txt2hex.awk $(<) > $(@)
+.txt.hex:; $(AWK) -f bin/checktxt.awk $(<) && $(AWK) -f bin/txt2hex.awk $(<) > $(@)
 .hex.bdf:; $(AWK) -f bin/hex2bdf.awk -v "VER=$(VERSION)" $(<) > $(@)
 .bdf.pcf:; bdftopcf $(<) > $(@)
 .pcf.otb:; $(FFORGE) -lang ff -c 'Open("$(<)"); Generate("$(*).", "otb")'
