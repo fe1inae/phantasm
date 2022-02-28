@@ -5,7 +5,7 @@
 # =========
 
 NAME    = phantasm
-VERSION = 0.0.3
+VERSION = 0.0.4
 
 UNIFONT = 14.0.01
 
