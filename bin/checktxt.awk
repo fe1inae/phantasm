@@ -20,9 +20,11 @@ BEGIN {
 	NEW=1
 }
 
-/^[█ ]+$/ {
+/^[█·]+$/ {
 	# unicode awareness is, unreliable
-	gsub(/█/, "#")
+	gsub(/█/, "1")
+	gsub(/·/, "0")
+	
 	if (NEW == 1) {
 		WIDTH=length($0)
 		HEIGHT+=1

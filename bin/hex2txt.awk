@@ -45,7 +45,7 @@ BEGIN {
 	}
 	
 	# format binary
-	gsub(/0/, "  ", bin)
+	gsub(/0/, "··", bin)
 	gsub(/1/, "██", bin)
 	
 	# write glyph

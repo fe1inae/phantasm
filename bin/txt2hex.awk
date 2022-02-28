@@ -34,7 +34,7 @@ BEGIN {
 /^[0-9A-Z]+:$/ {
 	# dump prev
 	if (CODEPOINT) {
-		gsub(/  /, "0", STRING)
+		gsub(/··/, "0", STRING)
 		gsub(/██/, "1", STRING)
 		bin=""
 		for (i = 1; i <= length(STRING); i+=4) {
@@ -47,13 +47,13 @@ BEGIN {
 }
 
 # convert string to num
-/^[█ ]+$/ {
+/^[█·]+$/ {
 	STRING = STRING $0
 }
 
 END {
 	if (CODEPOINT) {
-		gsub(/  /, "0", STRING)
+		gsub(/··/, "0", STRING)
 		gsub(/██/, "1", STRING)
 		bin=""
 		for (i = 1; i <= length(STRING); i+=4) {
